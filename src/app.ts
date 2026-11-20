@@ -5,6 +5,7 @@ import { env } from "./config/env.js";
 import { auth } from "./lib/auth.js";
 import { errorHandler, notFoundHandler } from "./middleware/error.js";
 import { adminRouter } from "./routes/admin.routes.js";
+import { bookingsRouter } from "./routes/bookings.routes.js";
 import { healthRouter } from "./routes/health.routes.js";
 import { servicesRouter } from "./routes/services.routes.js";
 
@@ -27,6 +28,7 @@ export function createApp(): Express {
   // ── Routes ──────────────────────────────────────────────
   app.use("/api/health", healthRouter);
   app.use("/api/services", servicesRouter);
+  app.use("/api/bookings", bookingsRouter);
   app.use("/api/admin", adminRouter);
 
   // ── Fallbacks ───────────────────────────────────────────
