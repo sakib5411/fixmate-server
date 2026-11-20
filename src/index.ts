@@ -1,12 +1,14 @@
 import { createApp } from "./app.js";
 import { closeDatabase, connectToDatabase } from "./config/db.js";
 import { env } from "./config/env.js";
+import { ensureIndexes } from "./db/collections.js";
 
 async function main(): Promise<void> {
   const app = createApp();
 
   try {
     await connectToDatabase();
+    await ensureIndexes();
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     console.warn(`⚠️  MongoDB is not connected: ${message}`);
