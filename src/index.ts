@@ -1,19 +1,15 @@
-import { createApp } from "./app.js";
 import { closeDatabase, connectToDatabase } from "./config/db.js";
 import { env } from "./config/env.js";
 import { ensureIndexes } from "./db/collections.js";
 
 async function main(): Promise<void> {
-  const app = createApp();
+  // The BetterAuth instance needs a live database, so connect first
+  // and only then load the Express app.
+  await connectToDatabase();
+  await ensureIndexes();
 
-  try {
-    await connectToDatabase();
-    await ensureIndexes();
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    console.warn(`⚠️  MongoDB is not connected: ${message}`);
-    console.warn("   The API will start, but database routes will fail until MONGODB_URI is set.");
-  }
+  const { createApp } = await import("./app.js");
+  const app = createApp();
 
   const server = app.listen(env.port, () => {
     console.log(`🚀 FixMate API listening on http://localhost:${env.port}`);
