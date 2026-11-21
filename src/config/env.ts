@@ -18,13 +18,21 @@ function readNumber(name: string, fallback: number): number {
  * Central place for every environment variable.
  * Nothing else in the codebase should read `process.env` directly.
  */
+const clientUrls = (process.env.CLIENT_URL ?? "http://localhost:3000")
+  .split(",")
+  .map((value) => value.trim())
+  .filter(Boolean);
+
 export const env = {
   nodeEnv: process.env.NODE_ENV ?? "development",
   isProduction: process.env.NODE_ENV === "production",
   port: readNumber("PORT", 5000),
   mongoUri: process.env.MONGODB_URI ?? "",
   dbName: process.env.DB_NAME ?? "fixmate",
-  clientUrl: process.env.CLIENT_URL ?? "http://localhost:3000",
+  /** Primary client origin — used for JWT audience and links. */
+  clientUrl: clientUrls[0] ?? "http://localhost:3000",
+  /** Every allowed client origin (CLIENT_URL accepts a comma-separated list). */
+  clientUrls,
 
   // BetterAuth
   betterAuthSecret: process.env.BETTER_AUTH_SECRET ?? "",

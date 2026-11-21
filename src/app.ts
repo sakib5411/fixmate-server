@@ -18,7 +18,8 @@ export function createApp(): Express {
 
   app.use(
     cors({
-      origin: env.clientUrl,
+      // A comma-separated CLIENT_URL lets production and preview domains coexist.
+      origin: env.clientUrls,
       credentials: true,
     })
   );

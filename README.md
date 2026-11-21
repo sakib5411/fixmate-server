@@ -31,7 +31,7 @@ NODE_ENV=development
 PORT=5000
 MONGODB_URI=mongodb+srv://...          # MongoDB Atlas
 DB_NAME=fixmate
-CLIENT_URL=http://localhost:3000       # also used for CORS + BetterAuth trusted origins
+CLIENT_URL=http://localhost:3000       # CORS + BetterAuth trusted origins (comma-separated allowed)
 BETTER_AUTH_SECRET=                    # 32+ byte random string
 BETTER_AUTH_URL=http://localhost:5000
 STRIPE_SECRET_KEY=                     # test mode
@@ -149,6 +149,8 @@ Password **`Fixmate1234`** for all of them.
 ## Deployment notes
 
 - Add the production client origin to `CLIENT_URL` (CORS + BetterAuth trusted origins).
+  A comma-separated list works, e.g. `https://fixmate.vercel.app,https://fixmate-git-main.vercel.app`,
+  so the production domain and Vercel preview deployments can be allowed at once.
 - Register `https://<your-api-domain>/api/payments/webhook` in the Stripe dashboard (test mode)
   and put its signing secret in `STRIPE_WEBHOOK_SECRET`.
 - BetterAuth cookies use `SameSite=None; Secure` in production so the client and API can live on

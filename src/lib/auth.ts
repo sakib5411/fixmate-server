@@ -13,7 +13,7 @@ export const auth = betterAuth({
   secret: env.betterAuthSecret,
   baseURL: env.betterAuthUrl,
   basePath: "/api/auth",
-  trustedOrigins: [env.clientUrl, env.betterAuthUrl],
+  trustedOrigins: [...env.clientUrls, env.betterAuthUrl],
 
   // BetterAuth owns the `users` collection (plus sessions/accounts/verifications).
   database: mongodbAdapter(getDb(), { usePlural: true }),
