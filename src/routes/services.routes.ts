@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { ObjectId, type Filter, type Sort } from "mongodb";
-import { servicesCollection } from "../db/collections.js";
+import { servicesCollection, usersCollection } from "../db/collections.js";
 import { verifyTechnician, verifyToken } from "../middleware/auth.js";
 import { HttpError } from "../middleware/error.js";
 import { validateBody } from "../middleware/validate.js";
@@ -105,7 +105,25 @@ servicesRouter.get("/:id", async (req, res) => {
     throw new HttpError(404, "Service not found");
   }
 
-  res.json({ success: true, data: serializeService(doc) });
+  // The details page shows a technician summary, so include the public profile.
+  const technician = await usersCollection().findOne({ email: doc.technicianEmail });
+
+  res.json({
+    success: true,
+    data: {
+      ...serializeService(doc),
+      technician: technician
+        ? {
+            name: technician.name,
+            email: technician.email,
+            image: technician.image ?? null,
+            area: technician.area ?? null,
+            bio: technician.bio ?? null,
+            phone: technician.phone ?? null,
+          }
+        : null,
+    },
+  });
 });
 
 // ── Technician: create ──
