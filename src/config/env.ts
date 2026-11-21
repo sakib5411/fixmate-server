@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 
-dotenv.config();
+// The project's .env wins over inherited shell variables (some shells export PORT=0).
+dotenv.config({ override: true });
 
 function readNumber(name: string, fallback: number): number {
   const raw = process.env[name];
