@@ -1,3 +1,5 @@
+// Load the Express `Request.user` type augmentation (see src/types/express.ts).
+import "./types/express.js";
 import { toNodeHandler } from "better-auth/node";
 import cors from "cors";
 import express, { type Express } from "express";

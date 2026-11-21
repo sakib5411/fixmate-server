@@ -1,3 +1,5 @@
+// Load the Express `Request.user` type augmentation (see src/types/express.ts).
+import "./types/express.js";
 import { closeDatabase, connectToDatabase } from "./config/db.js";
 import { env } from "./config/env.js";
 import { ensureIndexes } from "./db/collections.js";
