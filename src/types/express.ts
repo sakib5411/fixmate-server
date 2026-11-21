@@ -1,4 +1,5 @@
-import "express-serve-static-core";
+// Type-only import: erased at runtime (this package has no runtime module).
+import type {} from "express-serve-static-core";
 import type { AuthUser } from "./models.js";
 
 /**
