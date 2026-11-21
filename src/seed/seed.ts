@@ -303,10 +303,10 @@ async function clearSeedData(): Promise<void> {
 }
 
 async function createPeople(): Promise<void> {
-  const { auth } = await import("../lib/auth.js");
+  const { getAuth } = await import("../lib/auth.js");
 
   for (const person of PEOPLE) {
-    await auth.api.signUpEmail({
+    await getAuth().api.signUpEmail({
       body: {
         name: person.name,
         email: person.email,

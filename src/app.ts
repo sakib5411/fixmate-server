@@ -4,7 +4,9 @@ import { toNodeHandler } from "better-auth/node";
 import cors from "cors";
 import express, { type Express } from "express";
 import { env } from "./config/env.js";
-import { auth } from "./lib/auth.js";
+import { connectToDatabase } from "./config/db.js";
+import { ensureIndexes } from "./db/collections.js";
+import { getAuth } from "./lib/auth.js";
 import { errorHandler, notFoundHandler } from "./middleware/error.js";
 import { adminRouter } from "./routes/admin.routes.js";
 import { bookingsRouter } from "./routes/bookings.routes.js";
@@ -15,8 +17,34 @@ import { servicesRouter } from "./routes/services.routes.js";
 import { uploadsRouter } from "./routes/uploads.routes.js";
 import { usersRouter } from "./routes/users.routes.js";
 
+let ready: Promise<void> | null = null;
+
+/** Connects MongoDB once per process before any route touches a collection. */
+function ensureReady(): Promise<void> {
+  if (!ready) {
+    ready = (async () => {
+      await connectToDatabase();
+      await ensureIndexes();
+    })().catch((error: unknown) => {
+      ready = null;
+      throw error;
+    });
+  }
+  return ready;
+}
+
 export function createApp(): Express {
   const app = express();
+
+  // Must be registered before all routes (and before the BetterAuth handler).
+  app.use(async (_req, _res, next) => {
+    try {
+      await ensureReady();
+      next();
+    } catch (error) {
+      next(error);
+    }
+  });
 
   app.use(
     cors({
@@ -27,7 +55,8 @@ export function createApp(): Express {
   );
 
   // BetterAuth reads the raw request body, so it must be mounted before express.json().
-  app.all("/api/auth/*splat", toNodeHandler(auth));
+  // getAuth() is lazy because it needs the connected database.
+  app.all("/api/auth/*splat", (req, res) => toNodeHandler(getAuth())(req, res));
 
   // Stripe needs the untouched raw body to verify the webhook signature, so this
   // one route is mounted before express.json().
