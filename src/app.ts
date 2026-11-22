@@ -45,11 +45,12 @@ export function createApp(): Express {
   );
 
   // ── Root Route ──────────────────────────────────────────
-  app.get("/", (_req, res) => {
+  app.get(["/", "/api"], (_req, res) => {
     res.json({
       success: true,
       message: "🚀 FixMate API Server is running successfully!",
       health: "/api/health",
+      services: "/api/services",
     });
   });
 
