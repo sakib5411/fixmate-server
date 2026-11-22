@@ -44,14 +44,17 @@ export function createApp(): Express {
     })
   );
 
-  // ── Root Route ──────────────────────────────────────────
-  app.get(["/", "/api"], (_req, res) => {
-    res.json({
-      success: true,
-      message: "🚀 FixMate API Server is running successfully!",
-      health: "/api/health",
-      services: "/api/services",
-    });
+  // ── Root Route / Health Catch-all ───────────────────────
+  app.use((req, res, next) => {
+    if (req.path === "/" || req.path === "/api" || req.path === "") {
+      return res.json({
+        success: true,
+        message: "🚀 FixMate API Server is running successfully!",
+        health: "/api/health",
+        services: "/api/services",
+      });
+    }
+    next();
   });
 
   // Must be registered before all database routes (and before the BetterAuth handler).
