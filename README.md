@@ -9,9 +9,21 @@ Client repository: the `fixmate` Next.js app (see its README for the full projec
 
 | | URL |
 |---|---|
-| Live API | _add your deployment URL here_ (e.g. `https://fixmate-api.onrender.com`) |
-| Server repository | _add your GitHub link here_ |
-| Client repository | _add your GitHub link here_ |
+| Live API | https://fixmate-server-twq6.vercel.app |
+| Server repository | https://github.com/sakib5411/fixmate-server |
+| Client repository | https://github.com/sakib5411/fixmate |
+
+## Seed accounts
+
+Password **`Fixmate1234`** for all of them.
+
+| Role | Email | Password |
+|---|---|---|
+| Admin | `admin@fixmate.dev` | `Fixmate1234` |
+| Technician | `rafiq@fixmate.dev` | `Fixmate1234` |
+| Technician | `karim@fixmate.dev` | `Fixmate1234` |
+| Customer | `customer@fixmate.dev` | `Fixmate1234` |
+| Customer | `ayesha@fixmate.dev` | `Fixmate1234` |
 
 ## Quick start
 
