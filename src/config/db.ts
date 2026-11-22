@@ -11,7 +11,7 @@ let database: Db | undefined;
  * resolvers; production keeps the system DNS configuration.
  */
 function ensureSrvDns(): void {
-  if (env.isProduction || !env.mongoUri.startsWith("mongodb+srv://")) return;
+  if (!env.mongoUri.startsWith("mongodb+srv://")) return;
 
   try {
     dns.setServers(["1.1.1.1", "8.8.8.8"]);
@@ -31,7 +31,9 @@ export async function connectToDatabase(): Promise<Db> {
   }
 
   ensureSrvDns();
-  client = new MongoClient(env.mongoUri);
+  client = new MongoClient(env.mongoUri, {
+    serverSelectionTimeoutMS: 5000,
+  });
   await client.connect();
 
   database = client.db(env.dbName);

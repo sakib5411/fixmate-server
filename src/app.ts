@@ -36,7 +36,24 @@ function ensureReady(): Promise<void> {
 export function createApp(): Express {
   const app = express();
 
-  // Must be registered before all routes (and before the BetterAuth handler).
+  app.use(
+    cors({
+      // A comma-separated CLIENT_URL lets production and preview domains coexist.
+      origin: env.clientUrls.length ? env.clientUrls : true,
+      credentials: true,
+    })
+  );
+
+  // ── Root Route ──────────────────────────────────────────
+  app.get("/", (_req, res) => {
+    res.json({
+      success: true,
+      message: "🚀 FixMate API Server is running successfully!",
+      health: "/api/health",
+    });
+  });
+
+  // Must be registered before all database routes (and before the BetterAuth handler).
   app.use(async (_req, _res, next) => {
     try {
       await ensureReady();
@@ -45,14 +62,6 @@ export function createApp(): Express {
       next(error);
     }
   });
-
-  app.use(
-    cors({
-      // A comma-separated CLIENT_URL lets production and preview domains coexist.
-      origin: env.clientUrls,
-      credentials: true,
-    })
-  );
 
   // BetterAuth reads the raw request body, so it must be mounted before express.json().
   // getAuth() is lazy because it needs the connected database.
@@ -66,14 +75,6 @@ export function createApp(): Express {
   app.use(express.urlencoded({ extended: true }));
 
   // ── Routes ──────────────────────────────────────────────
-  app.get("/", (_req, res) => {
-    res.json({
-      success: true,
-      message: "🚀 FixMate API Server is running successfully!",
-      health: "/api/health",
-    });
-  });
-
   app.use("/api/health", healthRouter);
   app.use("/api/services", servicesRouter);
   app.use("/api/bookings", bookingsRouter);
