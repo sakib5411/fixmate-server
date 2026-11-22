@@ -66,6 +66,14 @@ export function createApp(): Express {
   app.use(express.urlencoded({ extended: true }));
 
   // ── Routes ──────────────────────────────────────────────
+  app.get("/", (_req, res) => {
+    res.json({
+      success: true,
+      message: "🚀 FixMate API Server is running successfully!",
+      health: "/api/health",
+    });
+  });
+
   app.use("/api/health", healthRouter);
   app.use("/api/services", servicesRouter);
   app.use("/api/bookings", bookingsRouter);
